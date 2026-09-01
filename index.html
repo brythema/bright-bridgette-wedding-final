@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+<meta name="theme-color" content="#1c1216" />
+<title>Bright &amp; Bridgette — Our Wedding</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Italiana&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+    --ink:#1c1216;
+    --ink-soft:#2b1b20;
+    --parchment:#f8f1e6;
+    --parchment-dim:#f0e4d3;
+    --wine:#6e2430;
+    --wine-deep:#3f1119;
+    --wine-soft:#8a3b46;
+    --gold:#b28a4d;
+    --gold-light:#e3c98f;
+    --gold-pale:#f2e4c4;
+    --muted:#7d685f;
+    --muted-on-dark:rgba(248,241,230,.58);
+    --white:#fffdfa;
+
+    --shadow-sm:0 2px 12px rgba(28,18,22,.07);
+    --shadow-md:0 18px 44px rgba(28,18,22,.12);
+    --shadow-lg:0 34px 90px rgba(28,18,22,.22);
+    --shadow-gold:0 12px 34px rgba(178,138,77,.28);
+
+    --radius-sm:10px;
+    --radius:20px;
+    --radius-lg:34px;
+
+    --ease:cubic-bezier(.19,1,.22,1);
+    --transition:.45s var(--ease);
+
+    --display:'Cormorant Garamond',serif;
+    --label:'Italiana',serif;
+    --body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+    font-family:var(--body);
+    background:var(--parchment);
+    color:var(--ink);
+    line-height:1.65;
+    overflow-x:hidden;
+    position:relative;
+}
+body::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    opacity:.035;
+    mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+h1,h2,h3,.serif{font-family:var(--display);font-weight:500;letter-spacing:-.01em;}
+img{max-width:100%;display:block;}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+a{color:inherit;}
+ul{list-style:none;}
+::selection{background:var(--gold-light);color:var(--ink);}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+::-webkit-scrollbar{width:10px;}
+::-webkit-scrollbar-track{background:var(--parchment);}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:10px;border:2px solid var(--parchment);}
+
+.skip-link{
+    position:fixed;top:-60px;left:16px;z-index:10001;
+    background:var(--ink);color:var(--gold-light);padding:12px 20px;
+    border-radius:8px;font-size:.85rem;letter-spacing:.04em;transition:top .3s ease;
+}
+.skip-link:focus{top:16px;}
+
+/* ============================================================
+   CREST (signature mark)
+   ============================================================ */
+.crest{
+    width:46px;height:46px;border-radius:50%;
+    border:1px solid var(--gold);
+    display:grid;place-items:center;position:relative;flex-shrink:0;
+}
+.crest::before{
+    content:'';position:absolute;inset:5px;
+    border:1px solid rgba(178,138,77,.4);border-radius:50%;
+}
+.crest span{
+    font-family:var(--display);font-style:italic;font-weight:600;
+    font-size:1rem;color:var(--gold);letter-spacing:.01em;
+}
+.crest--lg{width:78px;height:78px;}
+.crest--lg::before{inset:8px;}
+.crest--lg span{font-size:1.7rem;}
+
+/* ============================================================
+   AMBIENT MOTES (replaces floating heart emoji)
+   ============================================================ */
+.motes-container{position:fixed;inset:0;pointer-events:none;z-index:2;overflow:hidden;}
+.mote{
+    position:absolute;bottom:-40px;border-radius:50%;
+    background:radial-gradient(circle,var(--gold-light) 0%,rgba(227,201,143,0) 72%);
+    filter:blur(.4px);
+    animation:moteDrift linear infinite;
+    opacity:0;
+}
+@keyframes moteDrift{
+    0%{transform:translate(0,0) scale(.5);opacity:0;}
+    12%{opacity:var(--mote-opacity,.28);}
+    50%{transform:translate(var(--drift,20px),-55vh) scale(1);}
+    88%{opacity:var(--mote-opacity,.28);}
+    100%{transform:translate(calc(var(--drift,20px) * -1),-112vh) scale(.7);opacity:0;}
+}
+
+/* ============================================================
+   PAGE TRANSITION OVERLAY
+   ============================================================ */
+.page-transition{
+    position:fixed;inset:0;z-index:10000;background:var(--parchment);
+    display:flex;align-items:center;justify-content:center;
+    pointer-events:none;opacity:0;transition:opacity .5s ease;
+}
+.page-transition.active{opacity:1;pointer-events:auto;}
+.transition-inner{display:flex;flex-direction:column;align-items:center;gap:16px;}
+.transition-inner .crest{animation:crestPulse 1s ease-in-out infinite alternate;}
+.transition-text{
+    font-family:var(--label);font-size:.95rem;letter-spacing:.3em;
+    text-transform:uppercase;color:var(--wine);
+}
+.transition-text em{font-style:normal;color:var(--gold);}
+@keyframes crestPulse{0%{transform:scale(.92);opacity:.7;}100%{transform:scale(1.06);opacity:1;}}
+
+/* ============================================================
+   NAV (glassmorphic)
+   ============================================================ */
+.nav{
+    position:sticky;top:0;z-index:500;
+    background:rgba(248,241,230,.7);
+    backdrop-filter:blur(16px) saturate(160%);
+    -webkit-backdrop-filter:blur(16px) saturate(160%);
+    border-bottom:1px solid rgba(178,138,77,.18);
+    transition:var(--transition);
+}
+.nav.scrolled{
+    background:rgba(248,241,230,.9);
+    box-shadow:var(--shadow-sm);
+}
+.nav-inner{
+    max-width:1200px;margin:0 auto;padding:16px 28px;
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+}
+.nav-brand{display:flex;align-items:center;gap:12px;}
+.brand-text{font-family:var(--display);font-size:1.15rem;letter-spacing:.02em;}
+.brand-text em{font-style:italic;color:var(--wine);}
+.nav-links{display:flex;align-items:center;gap:4px;}
+.nav-links .nav-link{
+    font-family:var(--label);font-size:.72rem;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted);padding:12px 16px;
+    position:relative;transition:var(--transition);
+}
+.nav-links .nav-link::after{
+    content:'';position:absolute;left:50%;bottom:4px;width:0;height:1px;
+    background:var(--gold);transition:var(--transition);transform:translateX(-50%);
+}
+.nav-links .nav-link:hover{color:var(--ink);}
+.nav-links .nav-link.active{color:var(--wine);}
+.nav-links .nav-link.active::after{width:60%;}
+
+.nav-toggle{display:none;width:40px;height:40px;position:relative;flex-shrink:0;}
+.nav-toggle span{
+    position:absolute;left:9px;right:9px;height:1.5px;background:var(--ink);
+    border-radius:2px;transition:var(--transition);
+}
+.nav-toggle span:nth-child(1){top:14px;}
+.nav-toggle span:nth-child(2){top:19.5px;}
+.nav-toggle span:nth-child(3){top:25px;}
+.nav-toggle.active span:nth-child(1){transform:translateY(5.5px) rotate(45deg);}
+.nav-toggle.active span:nth-child(2){opacity:0;}
+.nav-toggle.active span:nth-child(3){transform:translateY(-5.5px) rotate(-45deg);}
+
+.nav-backdrop{
+    position:fixed;inset:0;background:rgba(15,9,11,.5);backdrop-filter:blur(2px);
+    opacity:0;pointer-events:none;transition:opacity .4s ease;z-index:900;
+}
+.nav-backdrop.open{opacity:1;pointer-events:auto;}
+
+.nav-drawer{
+    position:fixed;top:0;right:0;height:100%;width:min(340px,86vw);
+    background:rgba(28,18,22,.82);
+    backdrop-filter:blur(24px) saturate(160%);
+    -webkit-backdrop-filter:blur(24px) saturate(160%);
+    border-left:1px solid rgba(227,201,143,.18);
+    box-shadow:var(--shadow-lg);
+    transform:translateX(100%);
+    transition:transform .5s var(--ease);
+    z-index:901;
+    display:flex;flex-direction:column;align-items:center;
+    padding:90px 34px 40px;
+}
+.nav-drawer.open{transform:translateX(0);}
+.nav-drawer-close{
+    position:absolute;top:24px;right:24px;width:40px;height:40px;border-radius:50%;
+    border:1px solid rgba(227,201,143,.3);color:var(--parchment);
+    display:grid;place-items:center;font-size:.95rem;transition:var(--transition);
+}
+.nav-drawer-close:hover{border-color:var(--gold-light);color:var(--gold-light);}
+.nav-drawer-links{display:flex;flex-direction:column;width:100%;margin-top:36px;}
+.nav-drawer-links .nav-link{
+    width:100%;text-align:left;padding:16px 4px;
+    font-family:var(--label);letter-spacing:.14em;text-transform:uppercase;
+    font-size:.82rem;color:rgba(248,241,230,.82);
+    border-bottom:1px solid rgba(227,201,143,.12);transition:var(--transition);
+}
+.nav-drawer-links .nav-link:hover,
+.nav-drawer-links .nav-link.active{color:var(--gold-light);padding-left:10px;}
+.nav-drawer-foot{
+    margin-top:auto;font-family:var(--label);font-size:.68rem;
+    letter-spacing:.2em;color:rgba(248,241,230,.4);text-transform:uppercase;
+}
+body.menu-open{overflow:hidden;}
+
+/* ============================================================
+   PAGES
+   ============================================================ */
+.page{display:none;animation:fadePage .6s ease forwards;}
+.page.active{display:block;}
+@keyframes fadePage{0%{opacity:0;transform:translateY(18px);}100%{opacity:1;transform:translateY(0);}}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+    min-height:94vh;position:relative;display:grid;place-items:center;
+    overflow:hidden;background:var(--ink);
+}
+.hero img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    filter:brightness(.55) saturate(1.05);transition:transform 9s ease;
+}
+.hero:hover img{transform:scale(1.04);}
+.hero-scrim{
+    position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(28,18,22,.55) 0%,rgba(28,18,22,.25) 38%,rgba(28,18,22,.85) 100%);
+}
+.hero-content{
+    position:relative;z-index:2;color:var(--parchment);text-align:center;
+    padding:40px 20px 60px;max-width:800px;display:flex;flex-direction:column;align-items:center;
+}
+.hero-crest{margin-bottom:22px;border-color:var(--gold-light);}
+.hero-crest::before{border-color:rgba(227,201,143,.5);}
+.hero-crest span{color:var(--gold-light);}
+.kicker{
+    font-family:var(--label);letter-spacing:.4em;text-transform:uppercase;
+    font-size:.72rem;color:var(--gold-light);
+}
+.hero-content h1{
+    font-size:clamp(3.2rem,11vw,6.6rem);line-height:.95;margin:18px 0 0;
+    font-weight:500;text-shadow:0 10px 40px rgba(0,0,0,.35);
+}
+.hero-content h1 em{font-style:italic;color:var(--gold-light);}
+.hero-rule{width:64px;height:1px;margin:22px auto;background:linear-gradient(90deg,transparent,var(--gold-light),transparent);}
+.hero-date{
+    font-family:var(--display);font-style:italic;font-size:clamp(1.05rem,2.4vw,1.35rem);
+    opacity:.88;letter-spacing:.02em;
+}
+.scroll-cue{width:1px;height:52px;margin:46px auto 0;position:relative;overflow:hidden;background:rgba(248,241,230,.22);}
+.scroll-cue span{position:absolute;top:-50%;left:0;width:100%;height:50%;background:var(--gold-light);animation:scrollLine 2.4s ease-in-out infinite;}
+@keyframes scrollLine{0%{top:-50%;}100%{top:100%;}}
+
+/* ============================================================
+   SECTIONS / HEADS
+   ============================================================ */
+.section{max-width:1120px;margin:0 auto;padding:100px 24px;position:relative;z-index:3;}
+.section-head{text-align:center;max-width:640px;margin:0 auto 56px;}
+.section-head .eyebrow{
+    font-family:var(--label);letter-spacing:.32em;text-transform:uppercase;
+    font-size:.72rem;color:var(--wine);display:inline-block;
+}
+.section-head .eyebrow::after{content:'';display:block;width:38px;height:1px;background:var(--gold);margin:14px auto 0;}
+.section-head .eyebrow--light{color:var(--gold-light);}
+.section-head .eyebrow--light::after{background:var(--gold-light);}
+.section-head h2{font-size:clamp(2.3rem,5.4vw,3.6rem);font-weight:500;margin:16px 0 14px;}
+.section-head .lead{color:var(--muted);font-size:1.08rem;line-height:1.75;}
+
+/* ============================================================
+   COUPLE
+   ============================================================ */
+.couple{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:stretch;}
+.person{
+    display:grid;grid-template-columns:1fr 1.15fr;gap:0;align-items:center;
+    background:var(--white);border-radius:var(--radius);overflow:hidden;
+    box-shadow:var(--shadow-md);transition:var(--transition);
+    border:1px solid rgba(178,138,77,.12);
+}
+.person:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+.person:nth-child(2){direction:rtl;}
+.person:nth-child(2) .person-copy{direction:ltr;}
+.person-photo{height:100%;padding:14px;}
+.person-photo img{
+    width:100%;height:100%;object-fit:cover;aspect-ratio:4/5;
+    border-radius:120px 120px 8px 8px;
+    border:1px solid rgba(178,138,77,.3);
+}
+.person-copy{padding:28px 30px 28px 6px;}
+.person:nth-child(2) .person-copy{padding:28px 6px 28px 30px;}
+.person h3{font-size:2.5rem;margin:6px 0 8px;line-height:1;}
+.person .eyebrow{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--wine);font-weight:600;font-family:var(--body);}
+.person .lead{font-size:.95rem;color:var(--muted);line-height:1.75;margin-top:4px;}
+
+/* ============================================================
+   STORY
+   ============================================================ */
+.story{
+    position:relative;min-height:580px;display:grid;place-items:center;
+    overflow:hidden;color:var(--parchment);border-radius:var(--radius-lg);margin:0 24px;
+    box-shadow:var(--shadow-lg);
+}
+.story img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    filter:brightness(.4) saturate(1.05);transition:transform 11s ease;
+}
+.story:hover img{transform:scale(1.05);}
+.story-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,18,22,.2),rgba(28,18,22,.78));}
+.story-content{position:relative;text-align:center;max-width:680px;padding:80px 30px;z-index:2;}
+.story-content h2{font-size:clamp(2.4rem,5.6vw,3.8rem);font-weight:500;margin:16px 0 16px;}
+.story-content p{font-family:var(--display);font-style:italic;font-size:1.3rem;line-height:1.65;opacity:.92;}
+.story-note{font-size:.95rem;opacity:.6;margin-top:12px;font-style:italic;}
+
+/* ============================================================
+   PREDICTIONS (glass quiz card)
+   ============================================================ */
+.predictions{
+    background:radial-gradient(ellipse at top,var(--wine-deep) 0%,var(--ink) 68%);
+    color:var(--parchment);border-radius:var(--radius-lg);margin:0 24px;padding:80px 30px;
+}
+.quiz-card{
+    max-width:740px;margin:0 auto;position:relative;
+    background:rgba(255,251,245,.07);
+    backdrop-filter:blur(22px) saturate(150%);
+    -webkit-backdrop-filter:blur(22px) saturate(150%);
+    border:1px solid rgba(227,201,143,.22);
+    padding:38px 34px;border-radius:var(--radius);box-shadow:var(--shadow-lg);
+    overflow:hidden;
+}
+.quiz-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,transparent,var(--gold-light),transparent);
+}
+.quiz-top{
+    display:flex;justify-content:space-between;color:var(--muted-on-dark);
+    font-size:.68rem;text-transform:uppercase;letter-spacing:.12em;font-weight:600;font-family:var(--body);
+}
+.question{
+    font-family:var(--display);font-size:clamp(1.7rem,3.8vw,2.4rem);
+    text-align:center;margin:30px 0 24px;line-height:1.25;
+}
+.options{display:grid;gap:10px;}
+.option{
+    border:1px solid rgba(227,201,143,.2);background:rgba(255,255,255,.03);
+    border-radius:12px;padding:16px 20px;text-align:left;cursor:pointer;
+    transition:var(--transition);font-weight:500;color:var(--parchment);
+}
+.option:hover{border-color:var(--gold-light);background:rgba(227,201,143,.08);transform:translateX(4px);}
+.option.selected{
+    border-color:var(--gold-light);background:rgba(227,201,143,.12);
+    box-shadow:0 0 0 3px rgba(227,201,143,.15);
+}
+.controls{display:flex;justify-content:flex-end;margin-top:26px;}
+.btn{
+    background:linear-gradient(135deg,var(--gold-light),var(--gold));
+    color:var(--ink);padding:15px 34px;border-radius:60px;font-weight:600;
+    font-size:.9rem;letter-spacing:.02em;transition:var(--transition);box-shadow:var(--shadow-gold);
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(178,138,77,.4);}
+.btn:disabled{opacity:.45;cursor:default;transform:none;box-shadow:none;}
+
+/* ============================================================
+   ITINERARY
+   ============================================================ */
+.itinerary{background:var(--parchment-dim);border-radius:var(--radius-lg);margin:0 24px;padding:80px 30px;box-shadow:var(--shadow-sm) inset;}
+.timeline{max-width:700px;margin:0 auto;}
+.event{
+    display:grid;grid-template-columns:130px 1fr;gap:26px;padding:26px 0;
+    border-bottom:1px solid rgba(178,138,77,.2);transition:var(--transition);
+}
+.event:last-child{border-bottom:none;}
+.event:hover{padding-left:10px;}
+.event-time{
+    font-family:var(--label);font-size:.92rem;letter-spacing:.08em;
+    color:var(--wine);padding-left:16px;border-left:2px solid var(--gold);
+    align-self:start;padding-top:2px;
+}
+.event h3{font-size:1.55rem;margin:0 0 4px;line-height:1.2;}
+.event p{margin:0;color:var(--muted);font-size:.95rem;}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer{
+    text-align:center;padding:80px 20px 44px;background:var(--ink);color:var(--parchment);
+    margin-top:0;display:flex;flex-direction:column;align-items:center;gap:14px;
+}
+.footer .crest{border-color:var(--gold-light);}
+.footer .crest::before{border-color:rgba(227,201,143,.4);}
+.footer .crest span{color:var(--gold-light);}
+.footer h2{font-size:clamp(2.2rem,4.6vw,3.2rem);font-weight:500;margin:2px 0 2px;}
+.footer p{opacity:.65;font-size:1rem;}
+.footer-fine{
+    margin-top:26px;padding-top:22px;border-top:1px solid rgba(227,201,143,.15);
+    width:100%;max-width:420px;font-size:.78rem;color:rgba(248,241,230,.45);
+}
+.footer-fine a{color:var(--gold-light);text-decoration:none;border-bottom:1px solid rgba(227,201,143,.3);transition:var(--transition);}
+.footer-fine a:hover{border-color:var(--gold-light);}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:860px){
+    .nav-links{display:none;}
+    .nav-toggle{display:block;}
+    .couple{grid-template-columns:1fr;gap:26px;}
+    .person{grid-template-columns:1fr 1.15fr;}
+}
+@media (max-width:720px){
+    .person{grid-template-columns:1fr;text-align:center;}
+    .person-photo{padding:16px 16px 0;}
+    .person-photo img{aspect-ratio:1/1;max-height:280px;margin:0 auto;border-radius:100px 100px 8px 8px;}
+    .person:nth-child(2){direction:ltr;}
+    .person-copy, .person:nth-child(2) .person-copy{padding:22px 22px 26px;}
+    .story{margin:0 12px;min-height:420px;}
+    .predictions,.itinerary{margin:0 12px;padding:52px 18px;}
+    .event{grid-template-columns:1fr;gap:6px;padding:20px 0;}
+    .event-time{border-left:none;padding-left:0;border-bottom:2px solid var(--gold);display:inline-block;padding-bottom:4px;}
+    .quiz-card{padding:26px 20px;}
+}
+@media (max-width:560px){
+    .section{padding:60px 16px;}
+    .nav-inner{padding:14px 18px;}
+    .brand-text{display:none;}
+    .hero-content h1{font-size:clamp(2.6rem,15vw,3.8rem);}
+    .question{font-size:1.5rem;}
+    .controls{justify-content:center;}
+    .btn{width:100%;padding:14px 28px;}
+    .transition-inner .crest{width:60px;height:60px;}
+    .transition-text{font-size:.72rem;letter-spacing:.22em;}
+}
+
+@media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{
+        animation-duration:.001ms !important;
+        animation-iteration-count:1 !important;
+        transition-duration:.001ms !important;
+        scroll-behavior:auto !important;
+    }
+}
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#page1">Skip to content</a>
+
+<!-- ===== AMBIENT MOTES ===== -->
+<div class="motes-container" id="motesContainer" aria-hidden="true"></div>
+
+<!-- ===== PAGE TRANSITION OVERLAY ===== -->
+<div class="page-transition" id="pageTransition">
+    <div class="transition-inner">
+        <span class="crest"><span>B&amp;B</span></span>
+        <div class="transition-text">Bright <em>&amp;</em> Bridgette</div>
+    </div>
+</div>
+
+<!-- ===== MOBILE NAV DRAWER ===== -->
+<div class="nav-backdrop" id="navBackdrop"></div>
+<div class="nav-drawer" id="navDrawer" aria-hidden="true">
+    <button class="nav-drawer-close" id="navClose" aria-label="Close menu">✕</button>
+    <span class="crest crest--lg"><span>B&amp;B</span></span>
+    <nav class="nav-drawer-links">
+        <button class="nav-link" data-page="page1">Celebration</button>
+        <button class="nav-link" data-page="page1" data-section="story">Our Story</button>
+        <button class="nav-link" data-page="page1" data-section="quiz">Predictions</button>
+        <button class="nav-link" data-page="page2">Itinerary</button>
+    </nav>
+    <div class="nav-drawer-foot">Est. 2026</div>
+</div>
+
+<!-- ===== NAV ===== -->
+<header class="nav" id="siteNav">
+    <div class="nav-inner">
+        <button class="nav-brand nav-link" data-page="page1" aria-label="Bright and Bridgette — home">
+            <span class="crest"><span>B&amp;B</span></span>
+            <span class="brand-text">Bright <em>&amp;</em> Bridgette</span>
+        </button>
+        <nav class="nav-links" role="tablist">
+            <button class="nav-link active" data-page="page1">Celebration</button>
+            <button class="nav-link" data-page="page1" data-section="story">Our Story</button>
+            <button class="nav-link" data-page="page1" data-section="quiz">Predictions</button>
+            <button class="nav-link" data-page="page2">Itinerary</button>
+        </nav>
+        <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navDrawer">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</header>
+
+<main>
+<!-- ============================================================ -->
+<!-- PAGE 1: CELEBRATION                                           -->
+<!-- ============================================================ -->
+<div class="page active" id="page1">
+
+    <!-- HERO -->
+    <header class="hero" id="top">
+        <img src="https://images.unsplash.com/photo-1606216792687-5d0d8fc1c5ae?auto=format&fit=crop&w=1800&q=85" alt="Bright and Bridgette — wedding celebration" loading="eager" />
+        <div class="hero-scrim"></div>
+        <div class="hero-content">
+            <span class="crest crest--lg hero-crest"><span>B&amp;B</span></span>
+            <div class="kicker">The Wedding Of</div>
+            <h1>Bright <em>&amp;</em> Bridgette</h1>
+            <div class="hero-rule"></div>
+            <p class="hero-date">Saturday, 14th March 2026 · Abuja, Nigeria</p>
+            <div class="scroll-cue" aria-hidden="true"><span></span></div>
+        </div>
+    </header>
+
+    <!-- COUPLE -->
+    <section class="section" data-aos="fade-up">
+        <div class="section-head">
+            <div class="eyebrow">Meet the Couple</div>
+            <h2>Two people, one beautiful story.</h2>
+            <p class="lead">Before the celebration, meet the two people at the heart of it all.</p>
+        </div>
+        <div class="couple">
+            <article class="person" data-aos="fade-right">
+                <div class="person-photo"><img src="https://images.unsplash.com/photo-1554151228-14d9bef656d4?auto=format&fit=crop&w=900&q=85" alt="Bright — Groom" loading="lazy" /></div>
+                <div class="person-copy">
+                    <div class="eyebrow">The Groom</div>
+                    <h3>Bright</h3>
+                    <p class="lead">Bright is thoughtful, ambitious and known for finding a way to make people laugh. He loves good conversations, meaningful moments and building a future worth being excited about.</p>
+                </div>
+            </article>
+            <article class="person" data-aos="fade-left">
+                <div class="person-photo"><img src="https://images.unsplash.com/photo-1590073244378-16aa1f1ae281?auto=format&fit=crop&w=900&q=85" alt="Bridgette — Bride" loading="lazy" /></div>
+                <div class="person-copy">
+                    <div class="eyebrow">The Bride</div>
+                    <h3>Bridgette</h3>
+                    <p class="lead">Bridgette is warm, graceful and full of life. She brings joy wherever she goes and believes that the best memories are the ones shared with the people you love.</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- STORY -->
+    <section class="story" id="story" data-aos="zoom-in">
+        <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1800&q=85" alt="Wedding story — love and celebration" loading="lazy" />
+        <div class="story-scrim"></div>
+        <div class="story-content">
+            <div class="eyebrow eyebrow--light">How They Met</div>
+            <h2>And then, somehow, their paths crossed.</h2>
+            <p>It started with a meeting that neither of them knew would become the beginning of something extraordinary. A conversation became a friendship, friendship became love, and love brought them here — surrounded by the people who matter most.</p>
+            <p class="story-note">This is a sample story — replace it with theirs.</p>
+        </div>
+    </section>
+
+    <!-- PREDICTIONS (VOTING) -->
+    <section class="section predictions" id="quiz" data-aos="fade-up">
+        <div class="section-head">
+            <div class="eyebrow eyebrow--light">Your Turn</div>
+            <h2>Scan. Predict. Vote. Have fun.</h2>
+            <p class="lead" style="color:var(--muted-on-dark)">How well do you know Bright &amp; Bridgette? Make your predictions — the results will come alive at the reception.</p>
+        </div>
+        <div class="quiz-card">
+            <div class="quiz-top">
+                <span id="qnum">Question 1 of 8</span>
+                <span>Wedding Predictions</span>
+            </div>
+            <div class="question" id="question"></div>
+            <div class="options" id="options"></div>
+            <div class="controls">
+                <button class="btn" id="next">Next</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <span class="crest crest--lg"><span>B&amp;B</span></span>
+        <h2>Bright &amp; Bridgette</h2>
+        <p>Thank you for celebrating their love.</p>
+        <div class="footer-fine">
+            Wedding party &amp; planners — <a href="admin.html">Planner dashboard →</a>
+        </div>
+    </footer>
+</div>
+<!-- END PAGE 1 -->
+
+<!-- ============================================================ -->
+<!-- PAGE 2: ITINERARY                                             -->
+<!-- ============================================================ -->
+<div class="page" id="page2">
+
+    <div style="height:24px" aria-hidden="true"></div>
+
+    <!-- ITINERARY -->
+    <section class="section itinerary" data-aos="fade-up">
+        <div class="section-head">
+            <div class="eyebrow">The Big Day</div>
+            <h2>Wedding Itinerary</h2>
+            <p class="lead">A simple guide to the celebration — replace these sample times with the real programme.</p>
+        </div>
+        <div class="timeline">
+            <div class="event" data-aos="fade-right">
+                <div class="event-time">10:00 AM</div>
+                <div><h3>Guests Arrive</h3><p>Welcome, seating and photographs.</p></div>
+            </div>
+            <div class="event" data-aos="fade-right" data-aos-delay="100">
+                <div class="event-time">11:00 AM</div>
+                <div><h3>Wedding Ceremony</h3><p>The celebration begins.</p></div>
+            </div>
+            <div class="event" data-aos="fade-right" data-aos-delay="200">
+                <div class="event-time">1:00 PM</div>
+                <div><h3>Reception</h3><p>Food, music, laughter and celebration.</p></div>
+            </div>
+            <div class="event" data-aos="fade-right" data-aos-delay="300">
+                <div class="event-time">3:00 PM</div>
+                <div><h3>Wedding Predictions</h3><p>Live audience predictions with the MC.</p></div>
+            </div>
+            <div class="event" data-aos="fade-right" data-aos-delay="400">
+                <div class="event-time">4:00 PM</div>
+                <div><h3>First Dance &amp; Celebration</h3><p>Let's make memories.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <span class="crest crest--lg"><span>B&amp;B</span></span>
+        <h2>Bright &amp; Bridgette</h2>
+        <p>Thank you for celebrating their love.</p>
+        <div class="footer-fine">
+            Wedding party &amp; planners — <a href="admin.html">Planner dashboard →</a>
+        </div>
+    </footer>
+</div>
+<!-- END PAGE 2 -->
+</main>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<!-- Supabase — powers live predictions on admin.html -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<script>
+    // =============================================================
+    // 0. SUPABASE — paste your project URL and anon key from
+    //    Settings → API in the Supabase dashboard.
+    //    Table "predictions" must exist (see setup SQL below).
+    // =============================================================
+    const SUPABASE_URL = "https://fdomkgrocrcoqhlrowal.supabase.co";
+    const SUPABASE_ANON_KEY = "PASTE_YOUR_SUPABASE_KEY_HERE";
+    let supabaseClient;
+    try {
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } catch (err) {
+        console.warn('Supabase not configured yet — predictions will not be saved.', err);
+    }
+
+    // =============================================================
+    // 1. AMBIENT MOTES (replaces floating heart emoji)
+    // =============================================================
+    (function createMotes(){
+        const container = document.getElementById('motesContainer');
+        const count = window.innerWidth < 560 ? 9 : 15;
+        for (let i = 0; i < count; i++) {
+            const el = document.createElement('div');
+            el.className = 'mote';
+            const size = (3 + Math.random() * 6).toFixed(1);
+            el.style.left = Math.random() * 100 + '%';
+            el.style.width = size + 'px';
+            el.style.height = size + 'px';
+            el.style.setProperty('--drift', (Math.random() * 60 - 30).toFixed(0) + 'px');
+            el.style.setProperty('--mote-opacity', (0.14 + Math.random() * 0.24).toFixed(2));
+            el.style.animationDuration = (24 + Math.random() * 26) + 's';
+            el.style.animationDelay = (Math.random() * 30) + 's';
+            container.appendChild(el);
+        }
+    })();
+
+    // =============================================================
+    // 2. PAGE TRANSITION (crest loader)
+    // =============================================================
+    const transitionEl = document.getElementById('pageTransition');
+    let transitionLock = false;
+
+    function showTransition(callback) {
+        if (transitionLock) return;
+        transitionLock = true;
+        transitionEl.classList.add('active');
+        setTimeout(() => {
+            transitionEl.classList.remove('active');
+            if (callback) callback();
+            setTimeout(() => { transitionLock = false; }, 400);
+        }, 900);
+    }
+
+    // =============================================================
+    // 3. NAV — hamburger drawer
+    // =============================================================
+    const navToggle = document.getElementById('navToggle');
+    const navDrawer = document.getElementById('navDrawer');
+    const navBackdrop = document.getElementById('navBackdrop');
+    const navClose = document.getElementById('navClose');
+    const siteNav = document.getElementById('siteNav');
+
+    function openMenu(){
+        navDrawer.classList.add('open');
+        navBackdrop.classList.add('open');
+        navToggle.classList.add('active');
+        navToggle.setAttribute('aria-expanded','true');
+        navDrawer.setAttribute('aria-hidden','false');
+        document.body.classList.add('menu-open');
+    }
+    function closeMenu(){
+        navDrawer.classList.remove('open');
+        navBackdrop.classList.remove('open');
+        navToggle.classList.remove('active');
+        navToggle.setAttribute('aria-expanded','false');
+        navDrawer.setAttribute('aria-hidden','true');
+        document.body.classList.remove('menu-open');
+    }
+    navToggle.addEventListener('click', () => navDrawer.classList.contains('open') ? closeMenu() : openMenu());
+    navClose.addEventListener('click', closeMenu);
+    navBackdrop.addEventListener('click', closeMenu);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+    window.addEventListener('resize', () => { if (window.innerWidth > 860) closeMenu(); });
+    window.addEventListener('scroll', () => {
+        siteNav.classList.toggle('scrolled', window.scrollY > 30);
+    }, { passive: true });
+
+    // =============================================================
+    // 4. NAVIGATION (page switching + in-page scrolling)
+    // =============================================================
+    const pages = { page1: document.getElementById('page1'), page2: document.getElementById('page2') };
+    let currentPage = 'page1';
+    const navLinkButtons = document.querySelectorAll('.nav-link[data-page]');
+
+    function setActiveNav(page, section) {
+        navLinkButtons.forEach(b => {
+            const match = b.dataset.page === page && (b.dataset.section || 'top') === (section || 'top');
+            b.classList.toggle('active', match);
+        });
+    }
+
+    function scrollToTarget(section) {
+        if (section) {
+            const el = document.getElementById(section);
+            if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goTo(page, section) {
+        closeMenu();
+        setActiveNav(page, section);
+        if (page === currentPage) {
+            scrollToTarget(section);
+            return;
+        }
+        showTransition(() => {
+            Object.keys(pages).forEach(key => pages[key].classList.toggle('active', key === page));
+            currentPage = page;
+            setTimeout(() => AOS.refresh(), 100);
+            scrollToTarget(section);
+        });
+    }
+
+    navLinkButtons.forEach(btn => {
+        btn.addEventListener('click', () => goTo(btn.dataset.page, btn.dataset.section));
+    });
+
+    // =============================================================
+    // 5. QUIZ (voting)
+    // =============================================================
+    const questions = [
+        { q: "How many children will they have?", a: ["0", "1", "2", "3", "4", "5+"] },
+        { q: "Who will be the first to fall asleep?", a: ["Bride", "Groom"] },
+        { q: 'Who is more likely to say "I\'m sorry" first?', a: ["Bride", "Groom"] },
+        { q: "Who will control the TV remote?", a: ["Bride", "Groom", "They'll take turns"] },
+        { q: "Who is more likely to spend more money?", a: ["Bride", "Groom", "Both of them"] },
+        { q: "Where will they celebrate their 10th anniversary?", a: ["Nigeria", "Dubai", "Paris", "Somewhere unexpected"] },
+        { q: "Their first child will be...", a: ["Boy", "Girl"] },
+        { q: 'Who will be more likely to say "Let\'s take a picture!"?', a: ["Bride", "Groom"] }
+    ];
+
+    let current = 0, selected = null, answers = [];
+    const qEl = document.getElementById('question');
+    const oEl = document.getElementById('options');
+    const nextBtn = document.getElementById('next');
+
+    function render() {
+        const item = questions[current];
+        document.getElementById('qnum').textContent = `Question ${current + 1} of ${questions.length}`;
+        qEl.textContent = item.q;
+        oEl.innerHTML = '';
+        selected = null;
+        item.a.forEach(x => {
+            const b = document.createElement('button');
+            b.className = 'option';
+            b.textContent = x;
+            b.onclick = () => {
+                document.querySelectorAll('.option').forEach(z => z.classList.remove('selected'));
+                b.classList.add('selected');
+                selected = x;
+            };
+            oEl.appendChild(b);
+        });
+        nextBtn.disabled = false;
+        nextBtn.textContent = current === questions.length - 1 ? '🎉 Submit' : 'Next';
+    }
+
+    nextBtn.onclick = () => {
+        if (!selected) { alert('Please choose an answer.'); return; }
+        answers[current] = selected;
+
+        if (current === questions.length - 1) {
+            nextBtn.disabled = true;
+            qEl.textContent = 'Thank you! Your predictions are in. 🎉';
+            oEl.innerHTML = '<p style="text-align:center;color:var(--muted-on-dark);">The MC will reveal the live results during the reception.</p>';
+            nextBtn.textContent = '✅ Done';
+
+            // Send this guest's full set of answers to Supabase.
+            // admin.html listens to this same table in real time.
+            if (supabaseClient) {
+                supabaseClient.from('predictions').insert({ answers: answers }).then(({ error }) => {
+                    if (error) console.error('Prediction save failed:', error);
+                    else console.log('Prediction saved!');
+                });
+            }
+
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                setTimeout(() => confetti({ particleCount: 60, spread: 50, origin: { y: 0.5 } }), 300);
+            }
+            return;
+        }
+
+        current++;
+        render();
+        document.querySelector('.quiz-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    };
+
+    render();
+
+    // =============================================================
+    // 6. PLANNER SHORTCUT (Ctrl/Cmd + Shift + A → admin.html)
+    // =============================================================
+    document.addEventListener('keydown', e => {
+        if (e.key.toLowerCase() === 'a' && e.shiftKey && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            window.location.href = 'admin.html';
+        }
+    });
+
+    // =============================================================
+    // 7. INIT AOS
+    // =============================================================
+    AOS.init({
+        duration: 800,
+        easing: 'ease-out',
+        once: true,
+        offset: 40,
+        disable: window.innerWidth < 480 ? 'mobile' : false
+    });
+
+    // =============================================================
+    // 8. CONFETTI on first visit
+    // =============================================================
+    setTimeout(() => {
+        if (typeof confetti === 'function') {
+            confetti({ particleCount: 40, spread: 60, origin: { y: 0.3 } });
+        }
+    }, 800);
+
+    // =============================================================
+    // 9. Fix for iOS Safari 100vh issue
+    // =============================================================
+    function setVH() {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', vh + 'px');
+    }
+    setVH();
+    window.addEventListener('resize', setVH);
+</script>
+
+</body>
+</html>

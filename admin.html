@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+<meta name="theme-color" content="#1c1216" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Planner Dashboard — Bright &amp; Bridgette</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Italiana&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<style>
+/* ============================================================
+   TOKENS (shared with index.html)
+   ============================================================ */
+:root{
+    --ink:#1c1216;
+    --ink-soft:#2b1b20;
+    --parchment:#f8f1e6;
+    --parchment-dim:#f0e4d3;
+    --wine:#6e2430;
+    --wine-deep:#3f1119;
+    --gold:#b28a4d;
+    --gold-light:#e3c98f;
+    --gold-pale:#f2e4c4;
+    --muted:#7d685f;
+    --muted-on-dark:rgba(248,241,230,.58);
+    --white:#fffdfa;
+
+    --shadow-sm:0 2px 12px rgba(28,18,22,.07);
+    --shadow-md:0 18px 44px rgba(28,18,22,.12);
+    --shadow-lg:0 34px 90px rgba(28,18,22,.22);
+    --shadow-gold:0 12px 34px rgba(178,138,77,.28);
+
+    --radius-sm:10px;
+    --radius:20px;
+    --radius-lg:34px;
+
+    --ease:cubic-bezier(.19,1,.22,1);
+    --transition:.4s var(--ease);
+
+    --display:'Cormorant Garamond',serif;
+    --label:'Italiana',serif;
+    --body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+    font-family:var(--body);background:var(--parchment);color:var(--ink);
+    line-height:1.65;overflow-x:hidden;min-height:100vh;position:relative;
+}
+h1,h2,h3{font-family:var(--display);font-weight:500;letter-spacing:-.01em;}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+a{color:inherit;}
+input{font:inherit;}
+::selection{background:var(--gold-light);color:var(--ink);}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+
+.motes-container{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.mote{
+    position:absolute;bottom:-40px;border-radius:50%;
+    background:radial-gradient(circle,var(--gold-light) 0%,rgba(227,201,143,0) 72%);
+    filter:blur(.4px);animation:moteDrift linear infinite;opacity:0;
+}
+@keyframes moteDrift{
+    0%{transform:translate(0,0) scale(.5);opacity:0;}
+    12%{opacity:var(--mote-opacity,.22);}
+    50%{transform:translate(var(--drift,20px),-55vh) scale(1);}
+    88%{opacity:var(--mote-opacity,.22);}
+    100%{transform:translate(calc(var(--drift,20px) * -1),-112vh) scale(.7);opacity:0;}
+}
+
+/* CREST */
+.crest{
+    width:46px;height:46px;border-radius:50%;border:1px solid var(--gold);
+    display:grid;place-items:center;position:relative;flex-shrink:0;
+}
+.crest::before{content:'';position:absolute;inset:5px;border:1px solid rgba(178,138,77,.4);border-radius:50%;}
+.crest span{font-family:var(--display);font-style:italic;font-weight:600;font-size:1rem;color:var(--gold);}
+.crest--lg{width:76px;height:76px;}
+.crest--lg::before{inset:8px;}
+.crest--lg span{font-size:1.65rem;}
+
+/* ============================================================
+   ACCESS GATE
+   ============================================================ */
+.gate{
+    position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;
+    padding:24px;background:radial-gradient(ellipse at top,var(--wine-deep) 0%,var(--ink) 70%);
+}
+.gate-card{
+    width:100%;max-width:420px;text-align:center;
+    background:rgba(255,251,245,.06);
+    backdrop-filter:blur(22px) saturate(150%);
+    -webkit-backdrop-filter:blur(22px) saturate(150%);
+    border:1px solid rgba(227,201,143,.2);
+    border-radius:var(--radius-lg);padding:48px 36px 38px;box-shadow:var(--shadow-lg);
+    color:var(--parchment);position:relative;overflow:hidden;
+}
+.gate-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,transparent,var(--gold-light),transparent);
+}
+.gate-card .crest{margin:0 auto 20px;border-color:var(--gold-light);}
+.gate-card .crest::before{border-color:rgba(227,201,143,.5);}
+.gate-card .crest span{color:var(--gold-light);}
+.gate-card .eyebrow{
+    font-family:var(--label);letter-spacing:.3em;text-transform:uppercase;
+    font-size:.68rem;color:var(--gold-light);
+}
+.gate-card h1{font-size:clamp(1.9rem,5vw,2.4rem);margin:14px 0 10px;}
+.gate-note{font-size:.92rem;color:var(--muted-on-dark);line-height:1.6;margin-bottom:26px;}
+.gate-card form{display:flex;flex-direction:column;gap:14px;}
+.gate-card input{
+    width:100%;padding:15px 18px;border-radius:12px;
+    background:rgba(255,255,255,.04);border:1px solid rgba(227,201,143,.25);
+    color:var(--parchment);font-size:.95rem;text-align:center;letter-spacing:.05em;
+    transition:var(--transition);
+}
+.gate-card input::placeholder{color:rgba(248,241,230,.4);}
+.gate-card input:focus{border-color:var(--gold-light);outline:none;}
+.btn{
+    background:linear-gradient(135deg,var(--gold-light),var(--gold));
+    color:var(--ink);padding:15px 30px;border-radius:60px;font-weight:600;
+    font-size:.9rem;letter-spacing:.02em;transition:var(--transition);box-shadow:var(--shadow-gold);
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(178,138,77,.4);}
+.gate-hint{font-size:.76rem;color:rgba(248,241,230,.4);margin-top:20px;line-height:1.6;}
+.gate-back{
+    display:inline-block;margin-top:18px;font-size:.82rem;color:var(--gold-light);
+    text-decoration:none;border-bottom:1px solid rgba(227,201,143,.3);
+}
+.gate-back:hover{border-color:var(--gold-light);}
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+.dash{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;}
+.dash[hidden]{display:none;}
+
+.dash-top{
+    position:sticky;top:0;z-index:50;
+    background:rgba(248,241,230,.82);backdrop-filter:blur(16px) saturate(160%);
+    -webkit-backdrop-filter:blur(16px) saturate(160%);
+    border-bottom:1px solid rgba(178,138,77,.18);
+    padding:16px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+.dash-brand{display:flex;align-items:center;gap:12px;}
+.dash-brand strong{display:block;font-family:var(--display);font-size:1.1rem;}
+.dash-brand span{display:block;font-family:var(--label);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--wine);}
+.dash-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.live-badge{
+    font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--wine);
+    background:rgba(178,138,77,.12);padding:6px 14px;border-radius:40px;font-weight:600;
+}
+.dash-link{font-size:.82rem;color:var(--muted);text-decoration:none;border-bottom:1px solid transparent;transition:var(--transition);}
+.dash-link:hover{color:var(--wine);border-color:var(--wine);}
+.dash-logout{
+    font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--white);
+    background:var(--ink);padding:10px 20px;border-radius:40px;transition:var(--transition);
+}
+.dash-logout:hover{background:var(--wine-deep);}
+
+.dash-main{max-width:1100px;margin:0 auto;padding:60px 28px 40px;width:100%;flex:1;}
+.dash-section{margin-bottom:64px;}
+.section-head--left{text-align:left;margin:0 0 30px;max-width:640px;}
+.section-head--left .eyebrow{
+    font-family:var(--label);letter-spacing:.28em;text-transform:uppercase;
+    font-size:.7rem;color:var(--wine);display:inline-block;
+}
+.section-head--left .eyebrow::after{content:'';display:block;width:36px;height:1px;background:var(--gold);margin:12px 0 0;}
+.section-head--left h2{font-size:clamp(1.9rem,4vw,2.6rem);margin:14px 0 8px;}
+.section-head--left .lead{color:var(--muted);font-size:1rem;line-height:1.65;}
+
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;}
+.admin-card{
+    background:var(--white);border-radius:14px;padding:22px 20px;
+    box-shadow:var(--shadow-sm);border:1px solid rgba(178,138,77,.14);transition:var(--transition);
+}
+.admin-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
+.admin-card b{
+    display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;
+    color:var(--muted);margin-bottom:6px;font-weight:600;
+}
+.admin-card h3{font-size:1.5rem;margin:0 0 10px;}
+.bar{height:7px;background:var(--parchment-dim);border-radius:20px;overflow:hidden;margin-top:6px;}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--wine),var(--gold));border-radius:20px;transition:width .8s ease;}
+.admin-card small{display:block;color:var(--muted);font-size:.72rem;margin-top:6px;}
+
+.couple-answers-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.couple-answers-grid .admin-card{background:var(--parchment-dim);}
+.couple-answers-grid .admin-card ul{list-style:none;margin-top:6px;}
+.couple-answers-grid .admin-card li{font-size:.92rem;color:var(--ink-soft);padding:3px 0;}
+
+.dash-footer{
+    text-align:center;padding:30px 20px;font-size:.78rem;color:var(--muted);
+    border-top:1px solid rgba(178,138,77,.15);
+}
+
+@media (max-width:640px){
+    .dash-top{padding:14px 18px;}
+    .dash-brand strong{font-size:1rem;}
+    .dash-main{padding:40px 18px 30px;}
+    .couple-answers-grid{grid-template-columns:1fr;}
+    .dash-actions{gap:12px;}
+}
+
+@media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{
+        animation-duration:.001ms !important;
+        animation-iteration-count:1 !important;
+        transition-duration:.001ms !important;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="motes-container" id="motesContainer" aria-hidden="true"></div>
+
+<!-- ===== ACCESS GATE (front-end only — connect real auth later) ===== -->
+<div class="gate" id="gate">
+    <div class="gate-card">
+        <span class="crest crest--lg"><span>B&amp;B</span></span>
+        <div class="eyebrow">Planner &amp; MC Access</div>
+        <h1>Private Dashboard</h1>
+        <p class="gate-note">Enter the access code shared with your wedding planner or MC to view live predictions and the couple's private answers.</p>
+        <form id="gateForm">
+            <input type="password" id="gateInput" placeholder="Access code" autocomplete="off" />
+            <button class="btn" type="submit">Enter Dashboard</button>
+        </form>
+        <p class="gate-hint">Ask the wedding planner or MC for the access code. Keep this page private.</p>
+        <a class="gate-back" href="index.html">← Back to the wedding site</a>
+    </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div class="dash" id="dash" hidden>
+    <header class="dash-top">
+        <div class="dash-brand">
+            <span class="crest"><span>B&amp;B</span></span>
+            <div><strong>Bright &amp; Bridgette</strong><span>Planner Dashboard</span></div>
+        </div>
+        <div class="dash-actions">
+            <span class="live-badge">● Connecting…</span>
+            <a class="dash-link" href="index.html">View site</a>
+            <button class="dash-logout" id="logoutBtn">Sign out</button>
+        </div>
+    </header>
+
+    <main class="dash-main">
+        <section class="dash-section" data-aos="fade-up">
+            <div class="section-head--left">
+                <div class="eyebrow">Guest Predictions</div>
+                <h2>Live Prediction Results</h2>
+                <p class="lead">Updates live as guests submit their predictions on the wedding site.</p>
+            </div>
+            <div class="admin-grid" id="results"></div>
+        </section>
+
+        <section class="dash-section" data-aos="fade-up">
+            <div class="section-head--left">
+                <div class="eyebrow">Reveal</div>
+                <h2>The Couple's Private Answers</h2>
+                <p class="lead">Kept hidden from guests until the MC reveals them at the reception.</p>
+            </div>
+            <div class="couple-answers-grid">
+                <div class="admin-card">
+                    <b>Bright — Groom</b>
+                    <ul><li>Children: 3</li><li>First child: Boy</li><li>TV remote: Bridgette</li></ul>
+                </div>
+                <div class="admin-card">
+                    <b>Bridgette — Bride</b>
+                    <ul><li>Children: 2</li><li>First child: Girl</li><li>TV remote: Bright</li></ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="dash-footer">Live results pulled directly from Supabase. Couple's answers above stay manual — edit them in the HTML.</footer>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    // =============================================================
+    // AMBIENT MOTES
+    // =============================================================
+    (function createMotes(){
+        const container = document.getElementById('motesContainer');
+        const count = window.innerWidth < 560 ? 7 : 12;
+        for (let i = 0; i < count; i++) {
+            const el = document.createElement('div');
+            el.className = 'mote';
+            const size = (3 + Math.random() * 6).toFixed(1);
+            el.style.left = Math.random() * 100 + '%';
+            el.style.width = size + 'px';
+            el.style.height = size + 'px';
+            el.style.setProperty('--drift', (Math.random() * 60 - 30).toFixed(0) + 'px');
+            el.style.setProperty('--mote-opacity', (0.1 + Math.random() * 0.2).toFixed(2));
+            el.style.animationDuration = (24 + Math.random() * 26) + 's';
+            el.style.animationDelay = (Math.random() * 30) + 's';
+            container.appendChild(el);
+        }
+    })();
+
+    // =============================================================
+    // SUPABASE — paste the SAME credentials used on index.html so
+    // this dashboard reads from the same Supabase project.
+    // =============================================================
+    const SUPABASE_URL = "https://fdomkgrocrcoqhlrowal.supabase.co";
+    const SUPABASE_ANON_KEY = "PASTE_YOUR_SUPABASE_KEY_HERE";
+
+    // Short label per question, in the same order as the quiz on index.html.
+    const questionLabels = [
+        "Children", "First to sleep", "Say sorry first", "TV remote",
+        "Spend more", "10th anniversary", "First child", "Let's take a picture"
+    ];
+
+    const resultsEl = document.getElementById('results');
+    const liveBadge = document.querySelector('.live-badge');
+
+    function renderResults(totals, submissionCount) {
+        if (!submissionCount) {
+            resultsEl.innerHTML = '<div class="admin-card"><b>Waiting</b><h3>No votes yet</h3><small>Results will appear here as guests submit.</small></div>';
+            return;
+        }
+        resultsEl.innerHTML = totals.map((counts, i) => {
+            const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+            if (!entries.length) {
+                return `<div class="admin-card"><b>${questionLabels[i]}</b><h3>—</h3><div class="bar"><i style="width:0%"></i></div><small>0 votes</small></div>`;
+            }
+            const [topAnswer, topCount] = entries[0];
+            const totalForQ = entries.reduce((s, [, c]) => s + c, 0);
+            const pct = Math.round((topCount / totalForQ) * 100);
+            return `<div class="admin-card"><b>${questionLabels[i]}</b><h3>${topAnswer}</h3><div class="bar"><i style="width:${pct}%"></i></div><small>${pct}% · ${topCount} of ${totalForQ} votes</small></div>`;
+        }).join('');
+    }
+
+    let channel = null;
+    async function initSupabase() {
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Fetch current data
+        const { data, error } = await sb.from('predictions').select('answers');
+        if (error) {
+            console.error('Failed to load predictions:', error);
+            resultsEl.innerHTML = '<div class="admin-card"><b>Connection issue</b><h3>—</h3><small>Check your Supabase URL and anon key in the browser console.</small></div>';
+            return;
+        }
+
+        const totals = questionLabels.map(() => ({}));
+        (data || []).forEach(doc => {
+            const answers = doc.answers || [];
+            answers.forEach((ans, i) => {
+                if (!totals[i]) return;
+                totals[i][ans] = (totals[i][ans] || 0) + 1;
+            });
+        });
+        renderResults(totals, (data || []).length);
+        if (liveBadge) liveBadge.textContent = `● Live — ${(data || []).length} submission${(data || []).length === 1 ? '' : 's'}`;
+
+        // Real-time subscription
+        channel = sb.channel('predictions-channel')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'predictions' }, payload => {
+                console.log('Real-time update:', payload);
+                // Re-fetch to get accurate totals
+                sb.from('predictions').select('answers').then(({ data: newData }) => {
+                    const totals = questionLabels.map(() => ({}));
+                    (newData || []).forEach(doc => {
+                        const answers = doc.answers || [];
+                        answers.forEach((ans, i) => {
+                            if (!totals[i]) return;
+                            totals[i][ans] = (totals[i][ans] || 0) + 1;
+                        });
+                    });
+                    renderResults(totals, (newData || []).length);
+                    if (liveBadge) liveBadge.textContent = `● Live — ${(newData || []).length} submission${(newData || []).length === 1 ? '' : 's'}`;
+                });
+            })
+            .subscribe(status => {
+                if (status === 'SUBSCRIBED') {
+                    console.log('Subscribed to predictions');
+                }
+            });
+    }
+
+    try {
+        initSupabase();
+    } catch (err) {
+        console.warn('Supabase not configured — showing empty state.', err);
+        renderResults(questionLabels.map(() => ({})), 0);
+    }
+
+    // =============================================================
+    // ACCESS GATE
+    // =============================================================
+    const ACCESS_CODE = "brightbridgette2026";
+
+    const gate = document.getElementById('gate');
+    const dash = document.getElementById('dash');
+    const gateForm = document.getElementById('gateForm');
+    const gateInput = document.getElementById('gateInput');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const gateNote = document.querySelector('.gate-note');
+
+    gateForm.addEventListener('submit', e => {
+        e.preventDefault();
+        if (gateInput.value === ACCESS_CODE) {
+            gate.style.display = 'none';
+            dash.hidden = false;
+            setTimeout(() => AOS.refresh(), 50);
+        } else {
+            gateInput.style.borderColor = '#e74c3c';
+            gateInput.setAttribute('placeholder', 'Incorrect code — try again');
+            setTimeout(() => {
+                gateInput.style.borderColor = '';
+                gateInput.setAttribute('placeholder', 'Access code');
+            }, 2000);
+        }
+    });
+
+    logoutBtn.addEventListener('click', () => {
+        dash.hidden = true;
+        gate.style.display = 'flex';
+        gateInput.value = '';
+        gateInput.focus();
+    });
+
+    AOS.init({ duration: 700, easing: 'ease-out', once: true, offset: 30 });
+</script>
+
+</body>
+</html>

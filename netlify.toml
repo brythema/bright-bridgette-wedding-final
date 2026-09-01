@@ -1,0 +1,6 @@
+# Netlify configuration for Bright & Bridgette Wedding Site
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
