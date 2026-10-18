@@ -1,4 +1,3 @@
-.netlify/
-node_modules/
-BUILD.txt
-config.js
+.atlas/
+.mimosa/
+.vercel/

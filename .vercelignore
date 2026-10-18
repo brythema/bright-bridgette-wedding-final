@@ -1,0 +1,4 @@
+# Ship ONLY the public site (lesson: dev artifacts must not be public)
+/*
+!index.html
+!admin.html

@@ -669,17 +669,24 @@ body.menu-open{overflow:hidden;}
 
 <script>
     // =============================================================
-    // 0. SUPABASE — paste your project URL and anon key from
-    //    Settings → API in the Supabase dashboard.
-    //    Table "predictions" must exist (see setup SQL below).
+    // 0. SUPABASE (optional — the site ships standalone, no database).
+    //    To re-enable live predictions: paste your project URL + anon
+    //    key below (Supabase dashboard → Settings → API), make sure
+    //    the "predictions" table exists (SUPABASE-SETUP.sql), and
+    //    redeploy. Empty = offline mode: the quiz runs, answers are
+    //    just not saved to a database.
     // =============================================================
-    const SUPABASE_URL = "https://fdomkgrocrcoqhlrowal.supabase.co";
-    const SUPABASE_ANON_KEY = "PASTE_YOUR_SUPABASE_KEY_HERE";
+    const SUPABASE_URL = "";
+    const SUPABASE_ANON_KEY = "";
     let supabaseClient;
-    try {
-        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    } catch (err) {
-        console.warn('Supabase not configured yet — predictions will not be saved.', err);
+    if (SUPABASE_URL && SUPABASE_ANON_KEY && typeof supabase !== 'undefined') {
+        try {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch (err) {
+            console.warn('Supabase client failed — predictions will not be saved.', err);
+        }
+    } else {
+        console.log('Supabase not configured — predictions run in offline mode.');
     }
 
     // =============================================================

@@ -308,11 +308,13 @@ input{font:inherit;}
     })();
 
     // =============================================================
-    // SUPABASE — paste the SAME credentials used on index.html so
-    // this dashboard reads from the same Supabase project.
+    // SUPABASE (optional — the site ships standalone, no database).
+    // Paste the SAME URL + anon key you use on index.html to make
+    // this dashboard read from the live predictions table. Empty =
+    // offline mode: the dashboard shows its empty/waiting state.
     // =============================================================
-    const SUPABASE_URL = "https://fdomkgrocrcoqhlrowal.supabase.co";
-    const SUPABASE_ANON_KEY = "PASTE_YOUR_SUPABASE_KEY_HERE";
+    const SUPABASE_URL = "";
+    const SUPABASE_ANON_KEY = "";
 
     // Short label per question, in the same order as the quiz on index.html.
     const questionLabels = [
@@ -342,6 +344,11 @@ input{font:inherit;}
 
     let channel = null;
     async function initSupabase() {
+        if (!SUPABASE_URL || !SUPABASE_ANON_KEY || typeof supabase === 'undefined') {
+            resultsEl.innerHTML = '<div class="admin-card"><b>Offline</b><h3>No database connected</h3><small>Predictions are not being saved. Fill in the Supabase URL + anon key at the top of this file to enable the live dashboard.</small></div>';
+            if (liveBadge) liveBadge.textContent = '○ Offline — no database';
+            return;
+        }
         const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Fetch current data

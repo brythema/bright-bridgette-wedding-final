@@ -1,57 +1,37 @@
 # Bright & Bridgette — Wedding Website
 
-## ✅ Complete. Here's what's ready:
+## ✅ Live on Vercel (2026-10-18)
 
 | File | Purpose |
 |------|---------|
-| `index.html` | Public wedding site — guests take the quiz, predictions are saved |
-| `admin.html` | Planner dashboard — shows live results in real-time |
-| `netlify.toml` | Netlify configuration (already included) |
+| `index.html` | Public wedding site — guests take the quiz |
+| `admin.html` | Planner dashboard (`/admin.html`) — shows results when a database is connected |
+| `SUPABASE-SETUP.sql` | One-time SQL to create the `predictions` table (re-connection only) |
 
-**Database:** Supabase project `fdomkgrocrcoqhlrowal` — table `predictions` is created and ready.
-**Credentials:** Already embedded in both HTML files.
+**Database: STANDALONE (offline mode).** The site ships with **no database** and no embedded
+credentials. The quiz runs fully in the browser; admin.html shows an "Offline — no database"
+state. The previously used Supabase project `fdomkgrocrcoqhlrowal` was dead/unreachable
+(measured NXDOMAIN 2026-09-25; owner decision 2026-10-18: retire it, keep the site standalone).
 
----
+## Re-enabling live predictions (optional, owner action)
+1. Restore or create a Supabase project, run `SUPABASE-SETUP.sql`.
+2. Paste the project URL + anon key into the two empty constants at the top of the script
+   blocks in `index.html` (section 0) and `admin.html` (SUPABASE block).
+3. Redeploy (`vercel --prod --scope hemabryt` from this folder).
 
-## 🚀 Deploy to Netlify (1 minute)
+## 🚀 Deploy (Vercel, team hemabryt)
+```
+vercel --prod --scope hemabryt
+```
+Static site, no build step. `.vercelignore` ships only `index.html` + `admin.html`
+(dev/docs artifacts stay off the public site).
 
-### Option A: Drag & Drop (easiest)
-1. Go to **https://app.netlify.com/drop**
-2. Drag the entire `WEDDINGS/` folder onto the page
-3. Netlify gives you a live URL instantly (e.g., `https://xxx.netlify.app`)
-
-### Option B: Through Netlify Dashboard
-1. Go to **https://app.netlify.com** and sign up (free)
-2. Click **"Add new site"** → **"Deploy manually"**
-3. Drag the `WEDDINGS/` folder
-4. You'll get a live URL
-
----
-
-## ✅ How to Test
-
-1. **Open the Netlify URL** in a browser — that's your wedding site
-2. Scroll to the **Predictions** quiz, answer all 8 questions, hit Submit
-3. Open `admin.html` in a new tab (same Netlify URL + `/admin.html`)
-4. The live results should appear within seconds — no refresh needed
-
----
-
-## 🔗 Your Links
-
-- **Supabase Dashboard:** https://supabase.com/dashboard/project/fdomkgrocrcoqhlrowal
-- **Your Site (after deploy):** https://xxx.netlify.app (you'll set this up)
-
----
+## 🔗 Links
+- **Live:** https://bright-bridgette-wedding.vercel.app (+ `/admin.html`)
+- **Supabase Dashboard (if re-connecting):** supabase.com/dashboard
 
 ## How It Works
-
 ```
-Guest on index.html → fills quiz → Supabase API (predictions table)
-                                                        ↓
-Admin on admin.html ← real-time subscription ←───────────┘
+Guest on index.html → quiz (browser-only, offline mode)
+[optional] → Supabase predictions table ← admin.html real-time (only when configured)
 ```
-
-- **index.html** submits predictions to Supabase
-- **admin.html** listens to Supabase in real-time via Postgres changes
-- No server code needed. Free tier handles everything (500MB DB, 5GB bandwidth).
